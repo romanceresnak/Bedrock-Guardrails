@@ -34,7 +34,7 @@ provider "aws" {
 module "production_guardrail" {
   source = "./modules/bedrock-guardrail"
 
-  name        = "prod-company-guardrail"
+  name        = "prod-company-guardrail-v2"
   description = "Hlavný guardrail pre produkčného chatbota s plnou ochranou"
   environment = var.environment
 
@@ -156,7 +156,7 @@ module "production_guardrail" {
 module "development_guardrail" {
   source = "./modules/bedrock-guardrail"
 
-  name        = "dev-testing-guardrail"
+  name        = "dev-testing-guardrail-v2"
   description = "Vývojový guardrail s miernejšími nastaveniami pre testovanie"
   environment = var.environment
 
@@ -212,7 +212,7 @@ module "development_guardrail" {
 module "minimal_guardrail" {
   source = "./modules/bedrock-guardrail"
 
-  name        = "minimal-pii-guardrail"
+  name        = "minimal-pii-guardrail-v2"
   description = "Minimálny guardrail len s PII ochranou"
   environment = var.environment
 
