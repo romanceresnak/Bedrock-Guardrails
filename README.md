@@ -41,6 +41,36 @@ terraform output guardrails_summary
 - Terraform >= 1.5.0
 - AWS CLI configured (`aws configure`)
 - AWS Bedrock access (request in AWS Console → Bedrock → Model access)
+- S3 bucket and DynamoDB table for Terraform state (see Backend Setup below)
+
+### Backend Setup
+
+The project uses S3 backend for storing Terraform state. The backend resources have been created with the following names:
+
+- **S3 Bucket**: `bedrock-guardrails-terraform-state` (eu-west-1)
+- **DynamoDB Table**: `terraform-state-lock` (eu-west-1)
+
+These resources are already configured in `main.tf`. If you need to create them in a different AWS account:
+
+```bash
+# Create S3 bucket
+aws s3api create-bucket --bucket bedrock-guardrails-terraform-state \
+  --region eu-west-1 --create-bucket-configuration LocationConstraint=eu-west-1
+
+# Enable versioning and encryption
+aws s3api put-bucket-versioning --bucket bedrock-guardrails-terraform-state \
+  --versioning-configuration Status=Enabled --region eu-west-1
+
+aws s3api put-bucket-encryption --bucket bedrock-guardrails-terraform-state \
+  --server-side-encryption-configuration '{"Rules": [{"ApplyServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]}' \
+  --region eu-west-1
+
+# Create DynamoDB table
+aws dynamodb create-table --table-name terraform-state-lock \
+  --attribute-definitions AttributeName=LockID,AttributeType=S \
+  --key-schema AttributeName=LockID,KeyType=HASH \
+  --billing-mode PAY_PER_REQUEST --region eu-west-1
+```
 
 ### Configuration
 
@@ -196,15 +226,35 @@ Project includes GitHub Actions workflow for automatic deployment:
 - **Validate**: Terraform format and validate
 - **Test**: Python lint
 - **Plan**: Terraform plan for dev/prod
-- **Apply**: Manual deployment to dev/prod
+- **Apply**: Automatic deployment on push to main/develop branches
 
-### Setup GitHub Secrets
+### Authentication Setup
 
-Add to GitHub repository secrets:
-- `AWS_ACCESS_KEY_ID`
-- `AWS_SECRET_ACCESS_KEY`
-- `AWS_ACCESS_KEY_ID_PROD` (for production)
-- `AWS_SECRET_ACCESS_KEY_PROD` (for production)
+The workflow uses **OIDC** (OpenID Connect) for secure authentication to AWS without long-lived credentials.
+
+#### Required AWS Resources:
+
+1. **OIDC Identity Provider** in IAM:
+   - Provider URL: `https://token.actions.githubusercontent.com`
+   - Audience: `sts.amazonaws.com`
+
+2. **IAM Role**: `GitHubActionsBedrockRole` with:
+   - Trust policy allowing GitHub Actions from your repository
+   - Attached policies:
+     - `AmazonBedrockFullAccess`
+     - Inline policy for Terraform backend access (S3 + DynamoDB)
+
+The workflow is configured with:
+```yaml
+permissions:
+  id-token: write
+  contents: write
+
+env:
+  AWS_ROLE_ARN: 'arn:aws:iam::YOUR_ACCOUNT_ID:role/GitHubActionsBedrockRole'
+```
+
+**Note**: Update the `AWS_ROLE_ARN` in `.github/workflows/terraform.yml` with your AWS account ID and role name.
 
 ## 🗑️ Cleanup
 

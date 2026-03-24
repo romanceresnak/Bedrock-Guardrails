@@ -7,6 +7,15 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  # S3 backend for storing Terraform state
+  backend "s3" {
+    bucket         = "bedrock-guardrails-terraform-state"
+    key            = "terraform.tfstate"
+    region         = "eu-west-1"
+    encrypt        = true
+    dynamodb_table = "terraform-state-lock"
+  }
 }
 
 provider "aws" {
