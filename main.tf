@@ -134,7 +134,7 @@ module "production_guardrail" {
   ]
 
   # Vytvorenie stabilnej verzie pre produkciu
-  create_version     = true
+  create_version      = true
   version_description = "Production v1.0 - Plná ochrana"
 
   tags = {

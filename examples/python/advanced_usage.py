@@ -12,10 +12,11 @@ import boto3
 import json
 import os
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List
 from dotenv import load_dotenv
 
 load_dotenv()
+
 
 class GuardrailAnalyzer:
     """Trieda pre detailnú analýzu guardrail výsledkov."""
@@ -116,7 +117,7 @@ class GuardrailAnalyzer:
         """Parsuje guardrail assessment z headeru."""
         try:
             return json.loads(assessment_str)
-        except:
+        except (json.JSONDecodeError, ValueError):
             return {}
 
     def batch_test_prompts(

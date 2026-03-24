@@ -12,7 +12,7 @@ import boto3
 import json
 import os
 from datetime import datetime
-from typing import List, Dict, Optional
+from typing import List, Dict
 from dotenv import load_dotenv
 
 load_dotenv()

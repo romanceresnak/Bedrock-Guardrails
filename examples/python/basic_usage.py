@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 # Načítanie konfigurácie z .env súboru
 load_dotenv()
 
+
 class BedrockGuardrailExample:
     def __init__(self):
         self.region = os.getenv('AWS_REGION', 'us-east-1')
@@ -64,7 +65,8 @@ class BedrockGuardrailExample:
             response_body = json.loads(response['body'].read())
 
             # Kontrola guardrail výsledkov
-            guardrail_action = response.get('ResponseMetadata', {}).get('HTTPHeaders', {}).get('x-amzn-bedrock-guardrail-action', 'NONE')
+            headers = response.get('ResponseMetadata', {}).get('HTTPHeaders', {})
+            guardrail_action = headers.get('x-amzn-bedrock-guardrail-action', 'NONE')
 
             result = {
                 'success': True,
@@ -84,6 +86,7 @@ class BedrockGuardrailExample:
                 'blocked': True
             }
 
+
 def main():
     # Vytvorenie inštancie
     guardrail_example = BedrockGuardrailExample()
@@ -100,11 +103,11 @@ def main():
     result1 = guardrail_example.invoke_with_guardrail(prompt1)
 
     if result1['success'] and not result1['blocked']:
-        print(f"✓ Prompt prešiel")
+        print("✓ Prompt prešiel")
         print(f"Odpoveď: {result1['content'][:200]}...")
         print(f"Tokeny: {result1['usage']}")
     else:
-        print(f"✗ Prompt bol zablokovaný")
+        print("✗ Prompt bol zablokovaný")
         print(f"Dôvod: {result1.get('error', 'Guardrail action: ' + result1.get('guardrail_action'))}")
 
     print()
@@ -130,10 +133,10 @@ def main():
     result3 = guardrail_example.invoke_with_guardrail(prompt3)
 
     if result3['blocked']:
-        print(f"✓ Správne zablokované")
+        print("✓ Správne zablokované")
         print(f"Guardrail action: {result3.get('guardrail_action')}")
     else:
-        print(f"✗ Malo byť zablokované, ale prešlo")
+        print("✗ Malo byť zablokované, ale prešlo")
 
     print()
 
@@ -144,7 +147,7 @@ def main():
     result4 = guardrail_example.invoke_with_guardrail(prompt4)
 
     if result4['blocked']:
-        print(f"✓ Správne zablokované")
+        print("✓ Správne zablokované")
         print(f"Guardrail action: {result4.get('guardrail_action')}")
     else:
         print(f"Odpoveď: {result4.get('content', 'No content')[:200]}")
@@ -153,6 +156,7 @@ def main():
     print("=" * 80)
     print("Testy dokončené")
     print("=" * 80)
+
 
 if __name__ == "__main__":
     main()
