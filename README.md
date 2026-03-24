@@ -1,54 +1,54 @@
 # AWS Bedrock Guardrails - Terraform Infrastructure
 
-Modulárna Terraform infraštruktúra pre AWS Bedrock Guardrails s Python príkladmi.
+Modular Terraform infrastructure for AWS Bedrock Guardrails with Python examples.
 
-## 🚀 Rýchla inštalácia
+## 🚀 Quick Start
 
 ```bash
-# 1. Konfigurácia
+# 1. Configuration
 cp terraform.tfvars.example terraform.tfvars
-# Upravte aws_region a environment
+# Edit aws_region and environment
 
 # 2. Deploy
 terraform init
 terraform apply
 
-# 3. Získajte Guardrail IDs
+# 3. Get Guardrail IDs
 terraform output guardrails_summary
 ```
 
-## 📁 Štruktúra
+## 📁 Project Structure
 
 ```
 .
-├── main.tf                          # 3 guardrail príklady (prod, dev, minimal)
-├── variables.tf                     # Input premenné
-├── outputs.tf                       # Output hodnoty
-├── terraform.tfvars.example         # Konfiguračný template
+├── main.tf                          # 3 guardrail examples (prod, dev, minimal)
+├── variables.tf                     # Input variables
+├── outputs.tf                       # Output values
+├── terraform.tfvars.example         # Configuration template
 ├── modules/
-│   └── bedrock-guardrail/          # Reusable Terraform modul
+│   └── bedrock-guardrail/          # Reusable Terraform module
 └── examples/
-    └── python/                      # Python príklady použitia
-        ├── basic_usage.py          # Základné testy
-        ├── advanced_usage.py       # Pokročilá analýza
-        └── chatbot_example.py      # Interaktívny chatbot
+    └── python/                      # Python usage examples
+        ├── basic_usage.py          # Basic tests
+        ├── advanced_usage.py       # Advanced analysis
+        └── chatbot_example.py      # Interactive chatbot
 ```
 
-## 🔧 Terraform nasadenie
+## 🔧 Terraform Deployment
 
-### Predpoklady
+### Prerequisites
 
 - Terraform >= 1.5.0
-- AWS CLI nakonfigurované (`aws configure`)
-- AWS Bedrock access (request v AWS Console → Bedrock → Model access)
+- AWS CLI configured (`aws configure`)
+- AWS Bedrock access (request in AWS Console → Bedrock → Model access)
 
-### Konfigurácia
+### Configuration
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars
 ```
 
-Upravte `terraform.tfvars`:
+Edit `terraform.tfvars`:
 ```hcl
 aws_region  = "us-east-1"
 environment = "dev"
@@ -62,18 +62,18 @@ terraform plan
 terraform apply
 ```
 
-### Získanie Guardrail IDs
+### Get Guardrail IDs
 
 ```bash
-# Všetky guardraily
+# All guardrails
 terraform output guardrails_summary
 
-# Konkrétny guardrail
+# Specific guardrail
 terraform output production_guardrail_id
 terraform output production_guardrail_version
 ```
 
-## 🐍 Python príklady
+## 🐍 Python Examples
 
 ### Setup
 
@@ -83,7 +83,7 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Upravte `.env` s Guardrail ID z terraform output:
+Edit `.env` with Guardrail ID from terraform output:
 ```env
 GUARDRAIL_ID=abc-def-123
 GUARDRAIL_VERSION=1
@@ -91,26 +91,26 @@ AWS_REGION=us-east-1
 BEDROCK_MODEL_ID=anthropic.claude-3-sonnet-20240229-v1:0
 ```
 
-### Spustenie
+### Run
 
 ```bash
-# Základné testy (4 scenáre)
+# Basic tests (4 scenarios)
 python basic_usage.py
 
-# Pokročilá analýza s reportingom
+# Advanced analysis with reporting
 python advanced_usage.py
 
-# Interaktívny chatbot
+# Interactive chatbot
 python chatbot_example.py
 ```
 
-## 📊 Dostupné guardraily v projekte
+## 📊 Available Guardrails
 
 ### 1. Production Guardrail
 - **Content filters**: HATE, INSULTS, SEXUAL, VIOLENCE, MISCONDUCT (HIGH)
 - **PII**: Email, Phone, Name, Address, Credit Card (ANONYMIZE/BLOCK)
-- **Topics**: Investičné poradenstvo, zdravotné diagnózy, právne rady
-- **Version**: Fixná verzia 1.0
+- **Topics**: Investment advice, medical diagnosis, legal advice
+- **Version**: Fixed version 1.0
 
 ### 2. Development Guardrail
 - **Content filters**: HATE, VIOLENCE (MEDIUM/LOW)
@@ -119,11 +119,11 @@ python chatbot_example.py
 
 ### 3. Minimal Guardrail
 - **PII only**: Email, Phone (ANONYMIZE)
-- **Version**: Fixná verzia 1.0
+- **Version**: Fixed version 1.0
 
-## 🎨 Customizácia
+## 🎨 Customization
 
-Pridajte vlastný guardrail v `main.tf`:
+Add your own guardrail in `main.tf`:
 
 ```hcl
 module "my_guardrail" {
@@ -150,8 +150,8 @@ module "my_guardrail" {
   denied_topics = [
     {
       name       = "Custom_Topic"
-      definition = "Popis témy na zablokovanie"
-      examples   = ["príklad 1", "príklad 2"]
+      definition = "Description of topic to block"
+      examples   = ["example 1", "example 2"]
     }
   ]
 
@@ -161,15 +161,15 @@ module "my_guardrail" {
 }
 ```
 
-## 📋 Podporované možnosti
+## 📋 Supported Options
 
 ### Content Filter Types
-- `HATE` - Nenávistné prejavy
-- `INSULTS` - Urážky
-- `SEXUAL` - Sexuálny obsah
-- `VIOLENCE` - Násilie
-- `MISCONDUCT` - Nevhodné správanie
-- `PROMPT_ATTACK` - Prompt injection útoky
+- `HATE` - Hate speech
+- `INSULTS` - Insults and derogatory language
+- `SEXUAL` - Sexual content
+- `VIOLENCE` - Violence
+- `MISCONDUCT` - Inappropriate behavior
+- `PROMPT_ATTACK` - Prompt injection attacks
 
 ### PII Entity Types (top 15)
 - `EMAIL`, `PHONE`, `NAME`, `ADDRESS`
@@ -180,33 +180,33 @@ module "my_guardrail" {
 - `URL`, `AGE`
 
 ### Strength Levels
-- `NONE` - Bez filtrovania
-- `LOW` - Nízka citlivosť
-- `MEDIUM` - Stredná citlivosť
-- `HIGH` - Vysoká citlivosť (production)
+- `NONE` - No filtering
+- `LOW` - Low sensitivity
+- `MEDIUM` - Medium sensitivity
+- `HIGH` - High sensitivity (production)
 
 ### PII Actions
-- `BLOCK` - Zablokuje celý request
-- `ANONYMIZE` - Nahradí údaj (napr. [EMAIL], [PHONE])
+- `BLOCK` - Blocks the entire request
+- `ANONYMIZE` - Replaces data (e.g., [EMAIL], [PHONE])
 
-## 🔄 CI/CD s GitHub Actions
+## 🔄 CI/CD with GitHub Actions
 
-Projekt obsahuje GitHub Actions workflow pre automatické nasadenie:
+Project includes GitHub Actions workflow for automatic deployment:
 
-- **Validate**: Terraform format a validate
+- **Validate**: Terraform format and validate
 - **Test**: Python lint
-- **Plan**: Terraform plan pre dev/prod
-- **Apply**: Manual deployment do dev/prod
+- **Plan**: Terraform plan for dev/prod
+- **Apply**: Manual deployment to dev/prod
 
 ### Setup GitHub Secrets
 
-Pridajte do GitHub repository secrets:
+Add to GitHub repository secrets:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
-- `AWS_ACCESS_KEY_ID_PROD` (pre production)
-- `AWS_SECRET_ACCESS_KEY_PROD` (pre production)
+- `AWS_ACCESS_KEY_ID_PROD` (for production)
+- `AWS_SECRET_ACCESS_KEY_PROD` (for production)
 
-## 🗑️ Odstránenie
+## 🗑️ Cleanup
 
 ```bash
 terraform destroy
@@ -216,19 +216,19 @@ terraform destroy
 
 ### Problem: "Guardrail not found"
 ```bash
-# Overte Guardrail ID
+# Verify Guardrail ID
 terraform output production_guardrail_id
 
-# Skontrolujte v AWS
+# Check in AWS
 aws bedrock get-guardrail --guardrail-identifier <id> --region us-east-1
 ```
 
 ### Problem: "AccessDeniedException"
 ```bash
-# Overte AWS credentials
+# Verify AWS credentials
 aws sts get-caller-identity
 
-# Potrebné IAM permissions:
+# Required IAM permissions:
 # - bedrock:CreateGuardrail
 # - bedrock:GetGuardrail
 # - bedrock:UpdateGuardrail
@@ -238,48 +238,48 @@ aws sts get-caller-identity
 
 ### Problem: "Model not available in region"
 ```bash
-# Claude 3 je dostupný v:
+# Claude 3 is available in:
 # us-east-1, us-west-2, eu-central-1, eu-west-1
 
 # Request access:
 # AWS Console → Bedrock → Model access → Request access
 ```
 
-### Problem: Python príklady - "Guardrail blocked"
+### Problem: Python examples - "Guardrail blocked"
 ```bash
-# Toto je očakávané správanie pre niektoré testy
-# Check assessment v response headers pre detaily
+# This is expected behavior for some tests
+# Check assessment in response headers for details
 
-# Test v AWS Console:
+# Test in AWS Console:
 # AWS Console → Bedrock → Guardrails → Select guardrail → Test tab
 ```
 
-## 📚 Použitie v produkcii
+## 📚 Production Usage
 
 ### Best Practices
 
-1. **Vždy použite fixnú verziu v produkcii**
+1. **Always use fixed version in production**
    ```hcl
    create_version = true
    ```
 
-2. **Nikdy DRAFT v produkcii**
+2. **Never use DRAFT in production**
    ```python
-   guardrailVersion='1'  # ✓ Správne
-   guardrailVersion='DRAFT'  # ✗ Zlé
+   guardrailVersion='1'  # ✓ Correct
+   guardrailVersion='DRAFT'  # ✗ Wrong
    ```
 
-3. **Logujte blocked attempts**
+3. **Log blocked attempts**
    ```python
    if blocked:
        logger.warning("Guardrail blocked", extra={'prompt': prompt_hash})
    ```
 
-4. **Separujte dev/prod guardraily**
-   - Dev: MEDIUM strength, DRAFT verzia
-   - Prod: HIGH strength, fixná verzia
+4. **Separate dev/prod guardrails**
+   - Dev: MEDIUM strength, DRAFT version
+   - Prod: HIGH strength, fixed version
 
-## 📖 Príklad použitia
+## 📖 Usage Example
 
 ```python
 import boto3
