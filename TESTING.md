@@ -13,9 +13,9 @@
 ### Guardrail IDs
 
 From Terraform output:
-- **Production**: `1n5glzdlow7q` (Version: 1)
-- **Development**: `d7qzuzirajhb` (Version: DRAFT)
-- **Minimal**: `831k9vnxwhtg` (Version: 1)
+- **Production**: `v1k5qsj2b4os` (Version: 1)
+- **Development**: `7xz8g3pet9sx` (Version: DRAFT)
+- **Minimal**: `kjnf5o1bsu60` (Version: 1)
 
 ---
 
